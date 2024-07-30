@@ -15,12 +15,15 @@ if(commandLineArgs[0] == "--dev") {
   enableDevMode()
 } else if(commandLineArgs[0] == "--build") {
   console.log(chalk.blue("\t\t ○ Building static files... ○\n"))
+  enableDevMode()
+  const buildtime = async() => {
+    await buildStatic()
 
-  buildStatic()
-  console.log(chalk.blue("\t\t ○ Building Complete Successfully ○\n"))
+    console.log(chalk.blue("\t\t ○ Building Complete Successfully ○\n"))
 
-  // Exit
-  process.exit(0)
+    process.exit(0);
+  }
+  buildtime()
 } else {
   console.log(chalk.blue("\t\t ○ Running in production mode ○\n"))
   console.log(chalk.blue("\t\t ○ Building static files... ○\n"))
