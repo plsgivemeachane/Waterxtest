@@ -130,15 +130,10 @@ function complie(content, filename) {
     javascriptPart + "\n//Post script\n" + postjavascript + "\n" + workerScript; // Combine all the script
 
   
-  if(!fs.existsSync("PostLoadHTML")) console.log("BRUH??")
   var postLoadHTML = fs.readFileSync("PostLoadHTML.js").toString().replace(
     "${filename}", filename.split(".")[0] + ".html"
   );
 
-  if(!fs.existsSync("PostLoadJavascript.js")) {
-    console.log("WTF IS HAPPENDING")
-    console.log("current working dir: " + process.cwd())
-  }
   var postLoadJavascript = fs.readFileSync("PostLoadJavascript.js").toString().replace(
     "${filename}", filename.split(".")[0] + ".js"
   );
