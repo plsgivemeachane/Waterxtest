@@ -1,0 +1,13 @@
+// Title:Click test
+
+var a = 0
+console.log("Loaded")
+
+function Increase() {
+    a++;
+}
+
+<div>
+    <h1>{a}</h1>
+    <button onClick={Increase} >Click me</button>
+</div>
