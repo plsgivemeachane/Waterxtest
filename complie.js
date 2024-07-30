@@ -131,6 +131,10 @@ function complie(content, filename) {
   var postLoadHTML = fs.readFileSync("PostLoadHTML.js").toString().replace(
     "${filename}", filename.split(".")[0] + ".html"
   );
+
+  if(!fs.existsSync("PostLoadJavascript.js")) {
+    console.log("WTF IS HAPPENDING")
+  }
   var postLoadJavascript = fs.readFileSync("PostLoadJavascript.js").toString().replace(
     "${filename}", filename.split(".")[0] + ".js"
   );
@@ -158,7 +162,6 @@ function complie(content, filename) {
  *
  * @param {string} filename_or_path - The name or path of the file to hydrate
  * @param {string} path - The path to the file
- * @return {string} The hydrated data from the file
  */
 async function hydrate(filename_or_path, path) {
   // console.log(prebuildHTML[filename_or_path])
