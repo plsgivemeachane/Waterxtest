@@ -13,7 +13,7 @@ module.exports = {
   // Output configuration
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname), // Output directory
+    path: path.resolve(__dirname, 'static', "js"), // Output directory
   },
 
   // Module loaders for handling different file types
