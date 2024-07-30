@@ -191,11 +191,18 @@ async function hydrate(filename_or_path, path) {
       fs.mkdirSync("static/html");
     }
 
+    if(!fs.existsSync("static/js")) {
+      fs.mkdirSync("static/js");
+    }
+
+
     fs.writeFileSync("static/html/" + filename_or_path + ".html", data[0]);
     fs.writeFileSync("static/" + filename_or_path + ".js", data[1]);
     fs.writeFileSync("static/" + filename_or_path + ".html", data[2]);
 
     await buildBundle("static/" + filename_or_path + ".js");
+
+    infolog("Complied " + filename_or_path);
 
     return data[2];
   } else {
@@ -234,17 +241,17 @@ const getPrebuildJS = (filename) => {
   return file_content;
 };
 
-const travel = (path = "app")  => {
+const travel = async (path = "app")  => {
   for (var file of fs.readdirSync(path)) {
     if (file.endsWith(".waterx")) {
       console.log(chalk.yellow(`\t\t ○ Building file ${path}/${file} ○`))
-      hydrate(file.split(".")[0], path);
+      await hydrate(file.split(".")[0], path);
       continue
     }
 
     try {
       if (fs.lstatSync(path + "/" + file).isDirectory()) {
-        travel(path + "/" + file);
+        await travel(path + "/" + file);
       }
     } catch (error) {
       console.log(error)
@@ -252,14 +259,14 @@ const travel = (path = "app")  => {
   }
 }
 
-const buildStatic = () => {
+const buildStatic = async () => {
   if(!fs.existsSync("static")) {
     fs.mkdirSync("static");
   }
 
   // console.log(process.cwd())
 
-  travel()
+  await travel()
 }
 
 const extractFilename = (path) => {
@@ -267,9 +274,18 @@ const extractFilename = (path) => {
 }
 
 async function buildBundle(filename) {
+  infolog("Building bundle: " + "./" + extractFilename(filename) + " " + path.resolve(__dirname, "static", "js"));
   const compiler = Webpack([
     { entry: "./" + filename, output: { filename:"./" + extractFilename(filename), path: path.resolve(__dirname, "static", "js") }, mode:"production" , optimization: {minimize: false}, performance : {hints : false}},
   ]);
+
+  while(!fs.existsSync(filename)) {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
 
   // Compile asynchronously
   try {
@@ -279,6 +295,7 @@ async function buildBundle(filename) {
           reject(err);
         } else {
           const info = stats.toJson();
+          // infolog(info)
 
           if (stats.hasErrors()) {
             console.error(info.errors);
