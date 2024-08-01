@@ -1,0 +1,3 @@
+const message = "Why are you here?";
+
+<p>{message}</p>
